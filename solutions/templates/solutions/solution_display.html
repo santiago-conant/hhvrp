@@ -1,0 +1,82 @@
+{% block title %}
+	Solution
+{% endblock %}
+
+{% block css %}
+	<style>
+		#map {
+			height: 100%;
+		}
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+	</style>
+{% endblock %}
+
+
+{% block content %}
+
+		<div id="map"></div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5,
+          center: {lat:25.679121, lng: -100.317516},
+          scrollwheel: false
+        });
+
+		var flightPlanCoordinates;
+		var flightPath;
+		{% for route in routes %}
+			flightPlanCoordinates = [
+				{% for cust in route %}
+					{% if not forloop.first %},{% endif %}
+					{ 
+						lat: {{ cust.customer.position.latitude }},
+						lng: {{ cust.customer.position.longitude }}
+					}
+				{% endfor %}
+			];
+			flightPath = new google.maps.Polyline({
+				path: flightPlanCoordinates,
+				geodesic: true,
+				strokeColor: '#FF0000',
+				strokeOpacity: 1.0,
+				strokeWeight: 2,
+				map : map
+			});
+		
+
+			//flightPath.setMap(map);
+
+			{% for cust in customers %}
+				new google.maps.Marker({
+					map: map,
+					position: { 
+						lat: {{ cust.customer.position.latitude }},
+						lng: {{ cust.customer.position.longitude }}
+					},
+					title: "{{ cust.customer.name }}"
+				});
+			{% endfor %}
+		{% endfor %}
+     }
+	  
+    </script>
+ 
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0ac8PVDnT9pv5sO3z-TmdQRCuEjq5d28&callback=initMap">
+	</script>
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="container">
+	<h1>Routes</h1>
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>length</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for route in routes %}
+				<tr>
+					<td><a href="{% url 'solutions:route_display' route.id %}">{{ route.id }}</a></td>
+					<td>{{ route.length }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+{% endblock %}

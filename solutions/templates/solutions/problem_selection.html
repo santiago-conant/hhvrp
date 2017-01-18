@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="container">
+	<h1>Problems</h1>
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for problem in problems %}
+				<tr>
+					<td>{{ problem.id }}</td>
+					<td><a href="{% url 'solutions:create_route' problem.id %}">{{ problem.name }}</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+{% endblock %}
