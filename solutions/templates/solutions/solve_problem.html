@@ -1,7 +1,8 @@
+{% extends 'base.html' %}
 
 {% block content %}
 
-<form action="/solutions/solve-problem/" method="post">
+<form action="{% url 'solutions:solve_problem' %}" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Solve" />

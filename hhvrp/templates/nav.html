@@ -1,11 +1,19 @@
+<!-- Dropdown Structure -->
+<ul id="menu" class="dropdown-content">
+	<li><a href="{% url 'solutions:solve_problem' %}">Solver</a></li>
+	<li><a href="/admin/">Admin</a></li>
+</ul>
 <nav class="blue">
-	<div class="container">
+	<!-- <div class="container"> -->
 	<div class="nav-wrapper">
-		<a href="/" class="brand-logo center">HHVRP</a>
-		<ul id="nav-mobile" class="left hide-on-med-and-down">
-			<li><a href="{% url 'solutions:solve_problem' %}">Solve Problem</a></li>
-			<li><a href="/admin/">Administrator</a></li>
+		<a href="/" class="brand-logo left">GIEE-SI</a>
+		<!-- <ul id="nav-mobile" class="right hide-on-med-and-down"> -->
+		<ul id="nav-mobile" class="right">
+			<a class="dropdown-button" href="#!" data-activates="menu">
+			Menu
+			<i class="material-icons right">arrow_drop_down</i>
+			</a>
 		</ul>
 	</div>
-	</div>
+	<!-- </div> -->
 </nav>

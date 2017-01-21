@@ -89,10 +89,7 @@ def solve_problem(request):
                                 croutes.append({'color': colors[nr % 8], 'customers': croute})
                         # redirect to a new URL:
                         context = {'solution': croutes, 'customers': custs}
-                        o = render(request, 'solutions/draw_solution.html', context)
-                        print(o.getvalue())
-                        return o
-                        #return render(request, 'solutions/draw_solution.html', context)
+                        return render(request, 'solutions/draw_solution.html', context)
 ##                        return HttpResponseRedirect('/solutions/solution/')
                 else:
                         print("Falla!!")

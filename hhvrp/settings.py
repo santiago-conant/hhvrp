@@ -25,22 +25,23 @@ SECRET_KEY = 'ao1!o!3o=&d8*9$64tvp=5qi5(b4odri!&i^!#i-4=eh!h#se5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.pythonanywhere.com']
 
 GEOPOSITION_GOOGLE_MAPS_API_KEY = 'AIzaSyD0ac8PVDnT9pv5sO3z-TmdQRCuEjq5d28'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'problems.apps.ProblemsConfig',
-    'solutions.apps.SolutionsConfig',
-    'geoposition',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'problems.apps.ProblemsConfig',
+    'solutions.apps.SolutionsConfig',
+    'geoposition',
+
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
