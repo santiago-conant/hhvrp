@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+
 {% block css %}
 	<style>
 		#map {
@@ -9,11 +11,11 @@
 			margin: 0;
 			padding: 0;
 		}
-		h2 {
-			background-color: #0090f0;
-			color: white;
-			text-align: center;
+		p {
 			font-family: verdana;
+			font-size: 32px;
+			color: #0070d0;
+			text-align: center;
 		}
 	</style>
 {% endblock %}
@@ -21,7 +23,7 @@
 
 {% block content %}
 
-	<h2> Solution of {{ user }} with cost of {{ cost }} kilometers </h2>
+	<p> Solution of {{ user }} with cost of {{ cost }} kilometers </p>
 
 	<div id="map"></div>
 
