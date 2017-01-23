@@ -1,5 +1,4 @@
 from django.db import models
-#from datetime import datetime
 from problems.models import Customer, Problem
 
 class Solution(models.Model):
@@ -8,15 +7,30 @@ class Solution(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     # date and time of solution's creation
     created = models.DateTimeField(auto_now_add=True, blank=True)
-
+    # user name that run the solver
+    username = models.CharField(max_length=50)
+    # Maximum time for a route
+    max_time = models.FloatField(default=0.0) 
+    # Simulated Annealing initial temperature
+    max_temp = models.FloatField(default=0.0) 
+    # Simulated Annealing final temperature
+    min_temp = models.FloatField(default=0.0)  
+    # Simulated Annealing iterations at same temperature
+    eq_iter = models.IntegerField(default=0) 
+    # Simulated Annealing temperature reduction factor
+    temp_change = models.FloatField(default=0.0)  
+    # Solution cost
+    cost = models.FloatField(default=0.0)  
+    
     def __str__(self):
         c = {}
         c['problem'] = self.problem.name
         c['date'] = self.created
+        c['user'] = self.username
         return str(c)
 
     class Meta:
-        ordering = ['created']
+        ordering = ['username', 'created']
 
 class Route(models.Model):
     """Route data for VRP problems"""

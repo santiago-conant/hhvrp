@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block css %}
+	<style>
+		h2 {
+			text-align: center;
+			font-family: verdana;
+			color: #0070d0;
+		}
+	th, tr {
+		font-family: verdana;
+		font-size: 16px;
+		color: #0070d0;
+	}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+	<h2>List of Solutions</h2>
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Attribute</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>User</td>
+				<td>{{ solution.username }}</td>
+			</tr>
+			<tr>
+				<td>Problem</td>
+				<td>{{ solution.problem.name }}</td>
+			</tr>
+			<tr>
+				<td>Created</td>
+				<td>{{ solution.created }}</td>
+			</tr>
+			<tr>
+				<td>Maximum route cost</td>
+				<td>{{ solution.max_time }} kms.</td>
+			</tr>
+			<tr>
+				<td>SA: Initial temperature</td>
+				<td>{{ solution.max_temp }}</td>
+			</tr>
+			<tr>
+				<td>SA: Final temperature</td>
+				<td>{{ solution.min_temp }}</td>
+			</tr>
+			<tr>
+				<td>SA: Iterations at same temperature</td>
+				<td>{{ solution.eq_iter }}</td>
+			</tr>
+			<tr>
+				<td>SA: Reduction of temperature</td>
+				<td>{{ solution.temp_change }}</td>
+			</tr>
+			<tr>
+				<td>Solution's total cost</td>
+				<td>{{ cost }} kms.</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+{% endblock %}

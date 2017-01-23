@@ -117,14 +117,12 @@ class VRPTW:
         self.ncustomers = len(self.customers)       
 ##        print('# clients = ', self.ncustomers-1)
 
-    def eliminate_time_windows(self):
-        """modifies the time windows of all customers to the same size of depot"""
-        rt = self.customers[0].ready_time
-        #dd = self.customers[0].due_date
-        dd = 2000.0
-        for i in range(1,self.ncustomers):
-            self.customers[i].ready_time = rt
-            self.customers[i].due_date = dd
+    def eliminate_time_windows(self, max_time):
+        """modifies the time windows of all customers for a max_time"""
+        ini_time = 0.0
+        for i in range(self.ncustomers):
+            self.customers[i].ready_time = ini_time
+            self.customers[i].due_date = max_time
 
 class Aroute:
     """Route data for VRP"""

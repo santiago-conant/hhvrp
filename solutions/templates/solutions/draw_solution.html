@@ -1,40 +1,63 @@
-{% block title %}
-	Solution
-{% endblock %}
-
 {% block css %}
 	<style>
 		#map {
 			height: 100%;
 		}
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
+		/* Optional: Makes the sample page fill the window. */
+		html, body {
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		h2 {
+			background-color: #0090f0;
+			color: white;
+			text-align: center;
+			font-family: verdana;
+		}
 	</style>
 {% endblock %}
 
 
 {% block content %}
 
-		<div id="map"></div>
+	<h2> Solution of {{ user }} with cost of {{ cost }} kilometers </h2>
+
+	<div id="map"></div>
 
 {% endblock %}
 
 {% block js %}
     <script>
-      function initMap() {
+	function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 5,
-			center: {lat:25.679121, lng: -100.317516},
-			scrollwheel: false
+			//zoom: 4,
+			//center: {lat:25.679121, lng: -100.317516},
+			scrollwheel: true
         });
 
 		var flightPlanCoordinates;
 		var flightPath;
+		var customerMarker;
+		var bounds = new google.maps.LatLngBounds();
 		{% for route in solution %}
+			{% for cust in route.customers %}
+				customerMarker = new google.maps.Marker({
+					map: map,
+					icon: {
+						path: google.maps.SymbolPath.CIRCLE,
+						strokeColor: '{{ route.color }}',
+						scale: 4
+					},
+					position: { 
+						lat: {{ cust.latitude }},
+						lng: {{ cust.longitude }}
+					},
+					title: "{{ cust.name }}"
+				});
+				bounds.extend(customerMarker.getPosition());
+			{% endfor %}
+			
 			flightPlanCoordinates = [
 				{% for cust in route.customers %}
 					{% if not forloop.first %},{% endif %}
@@ -54,6 +77,8 @@
 			});
 		
 		{% endfor %}
+					
+		map.fitBounds(bounds);
     }
 	</script>
  

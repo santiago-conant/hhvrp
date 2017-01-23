@@ -15,7 +15,6 @@ def route_display(request, route_id):
 	context = { 'route_id': route_id, 'customers': customers}
 	return render(request, 'solutions/route_display.html', context)
 
-
 def problem_selection(request):
         problems = Problem.objects.all()
         context = {'problems': problems, 'problemsCount':Problem.objects.count()}
@@ -57,15 +56,26 @@ def solve_problem(request):
                 form = SAparameters(request.POST)
                 # check whether it's valid:
                 if form.is_valid():
-                        best,custs = simulated_annealing(request,
-                                                         form.cleaned_data['problem'].id,
-                                                         form.cleaned_data['max_temp'],
-                                                         form.cleaned_data['min_temp'],
-                                                         form.cleaned_data['eq_iter'],
-                                                         form.cleaned_data['temp_change'])
+                        problem = form.cleaned_data['problem']
+                        max_time = form.cleaned_data['max_time']
+                        max_temp = form.cleaned_data['max_temp']
+                        min_temp = form.cleaned_data['min_temp']
+                        eq_iter = form.cleaned_data['eq_iter']
+                        temp_change = form.cleaned_data['temp_change']
+                        username = form.cleaned_data['username']
+                        best,custs = simulated_annealing(problem.id, max_time,
+                                                         max_temp, min_temp,
+                                                         eq_iter, temp_change)
                         # saving the solution in the database
-##                        solution = Solution(problem=form.cleaned_data['problem'])
-##                        solution.save()
+                        solution = Solution(problem = problem,
+                                            username = username,
+                                            max_time = max_time,
+                                            max_temp = max_temp,
+                                            min_temp = min_temp,
+                                            eq_iter = eq_iter,
+                                            temp_change = temp_change,
+                                            cost = best.cost())
+                        solution.save()
 ##                        for r in best.routes:
 ##                                route = Route(solution=solution)
 ##                                route.save()
@@ -84,18 +94,36 @@ def solve_problem(request):
                         for nr,r in enumerate(best.routes):
                                 croute = []
                                 for c in r.customers:
-                                        croute.append({'latitude': custs[c].latitude,
+                                        croute.append({'name': custs[c].name,
+                                                       'latitude': custs[c].latitude,
                                                        'longitude': custs[c].longitude})
                                 croutes.append({'color': colors[nr % 8], 'customers': croute})
                         # redirect to a new URL:
-                        context = {'solution': croutes, 'customers': custs}
+                        context = {'user': username,
+                                   'cost': '{:,.3f}'.format(best.cost()),
+                                   'solution': croutes}
                         return render(request, 'solutions/draw_solution.html', context)
-##                        return HttpResponseRedirect('/solutions/solution/')
-                else:
-                        print("Falla!!")
 
         # if a GET (or any other method) we'll create a blank form
         else:
                 form = SAparameters()
+   
+        return render(request, 'solutions/solve_problem.html', {'form': form})
 
-        return render(request, 'solutions/solve_problem.html', {'form': form})        
+def list_results(request):
+        solutions = Solution.objects.order_by('cost')
+        sols = []
+        for solution in solutions:
+                sols.append({'solution_id': solution.id,
+                             'user': solution.username,
+                             'problem': solution.problem,
+                             'created': solution.created,
+                             'cost': '{:,.3f}'.format(solution.cost)})
+        context = {'solutions': sols}
+        return render(request, 'solutions/list_results.html', context)
+
+def solution_description(request, solution_id):
+        solution = Solution.objects.get(id = solution_id)
+        context = {'solution': solution, 'cost': '{:,.3f}'.format(solution.cost)}
+        return render(request, 'solutions/solution_description.html', context)
+

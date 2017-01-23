@@ -1,9 +1,124 @@
+<head>
+<style>
+body {
+	text-align: center;
+	background-color: #fefef7;
+}
+
+h1 {
+	background-color: #0090f0;
+    color: white;
+    text-align: center;
+    font-family: verdana;
+}
+h5 {
+	background-color: #0090f0;
+    color: white;
+    text-align: center;
+    font-family: verdana;
+}
+
+p {
+    font-family: verdana;
+    font-size: 18px;
+	color: #0070d0;
+}
+input, select {
+    font-family: verdana;
+    font-size: 16px;
+	color: #0070d0;
+}
+
+*{
+	margin: 0;
+	padding: 3;
+}
+#contenedor{
+	margin: 10px auto;
+	width: 260px;
+	height: 55px;
+}
+.reloj{
+	float: left;
+	font-size: 50px;
+	font-family: Courier,sans-serif;
+	color: #0070d0;
+}
+.boton{
+	outline: none;
+	border: 1px solid #363431;
+	color: white;
+	width: 128px;
+	height: 30px;
+	text-shadow: 0px -1px 1px black;
+	font-size: 20px;
+	border-radius: 5px;
+	font-family: Verdana;
+	cursor: pointer;
+	background-image: linear-gradient(#0090f0,#000f6f);
+}
+.boton:active{
+	background-image: linear-gradient(#000f6f,#0090f0);
+}
+.boton:hover{
+	box-shadow: 0px 0px 10px #0090f0;
+}
+
+</style>
+</head>
+
 {% block content %}
 
-<form action="{% url 'solutions:solve_problem' %}" method="post">
+<h1>HHVRP Solver</h1>
+
+<form action="{% url 'solutions:solve_problem' %}" method="post" onsubmit="inicio();">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Solve" />
+    {{ form.as_p }}
+    <input type="submit" class="boton"  value="Solve" />
 </form>
+
+<div id="contenedor">
+	<div class="reloj" id="Minutos">00</div>
+	<div class="reloj" id="Segundos">:00</div>
+	<div class="reloj" id="Centesimas">:00</div>
+</div>
+
+<h5>© 2017 Santiago Conant</h1>
+
+<script>
+var centesimas = 0;
+var segundos = 0;
+var minutos = 0;
+var horas = 0;
+function inicio () {
+	control = setInterval(cronometro,10);
+}
+function cronometro () {
+	if (centesimas < 99) {
+		centesimas++;
+		if (centesimas < 10) { centesimas = "0"+centesimas }
+		Centesimas.innerHTML = ":"+centesimas;
+	}
+	if (centesimas == 99) {
+		centesimas = -1;
+	}
+	if (centesimas == 0) {
+		segundos ++;
+		if (segundos < 10) { segundos = "0"+segundos }
+		Segundos.innerHTML = ":"+segundos;
+	}
+	if (segundos == 59) {
+		segundos = -1;
+	}
+	if ( (centesimas == 0)&&(segundos == 0) ) {
+		minutos++;
+		if (minutos < 10) { minutos = "0"+minutos }
+		Minutos.innerHTML = minutos;
+	}
+	if (minutos == 59) {
+		minutos = -1;
+	}
+}
+</script>
 
 {% endblock %}

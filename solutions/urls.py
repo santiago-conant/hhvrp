@@ -10,5 +10,9 @@ urlpatterns = [
     url(r'^problem/(?P<problem_id>[0-9]+)/$', views.create_route, name='create_route'),
     url(r'^solve-problem/$', views.solve_problem, name='solve_problem'),
     url(r'^solution/$', views.solution_selection, name='solution_selection'),
-    url(r'^solution/(?P<solution_id>[0-9]+)/$', views.solution_display, name='solution_display'),
+    url(r'^solution/(?P<solution_id>[0-9]+)/$', views.solution_display,
+        name='solution_display'),
+    url(r'^results/$', views.list_results, name='list_results'),
+    url(r'^results/(?P<solution_id>[0-9]+)/$', views.solution_description,
+        name='solution_description'),
 ]

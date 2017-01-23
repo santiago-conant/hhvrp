@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="container">
+	<h1>Solutions</h1>
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Problem</th>
+				<th>Creation Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for solution in solutions %}
+				<tr>
+					<td><a href="{% url 'solutions:solution_display' solution.id %}">{{ solution.problem.name }}</a></td>
+					<td>{{ solution.created }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+{% endblock %}
