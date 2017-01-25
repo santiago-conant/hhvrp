@@ -69,14 +69,28 @@ input, select {
 
 {% block content %}
 
-<h1>HHVRP Solver</h1>
+<h1>Competition</h1>
 
 <br>
-<form action="{% url 'solutions:solve_problem' %}" method="post" onsubmit="inicio();">
+<p>Problem = 'Capitales de México'</p>
+
+<form action="{% url 'solutions:competition' %}" method="post" onsubmit="inicio();">
     {% csrf_token %}
-    {{ form.as_p }}
+	<br>
+    <p> Your name {{ form.username }} </p>
+	<p> Interroute 
+		<input type="text" id="interInput" size='1' value="" readonly>
+		{{ form.prob_Intra_Inter }}  
+		<input type="text" id="intraInput" size='1' value="" readonly> 
+		Intraroute </p>
+    <p> Shift 
+		<input type="text" id="shiftInput" size='1' value="" readonly>
+		{{ form.prob_2opt_Rmove }} 
+		<input type="text" id="2optInput" size='1' value="" readonly>
+		2-opt </p>
 	<br>
     <input type="submit" class="boton"  value="Solve" />
+	<br>
 </form>
 
 <div id="contenedor">
@@ -120,6 +134,15 @@ function cronometro () {
 	if (minutos == 59) {
 		minutos = -1;
 	}
+}
+
+function updateIntraInter(val) {
+	document.getElementById('intraInput').value=val; 
+	document.getElementById('interInput').value=100-val; 
+}
+function update2optShift(val) {
+	document.getElementById('2optInput').value=val; 
+	document.getElementById('shiftInput').value=100-val; 
 }
 </script>
 

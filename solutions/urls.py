@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^solution/(?P<solution_id>[0-9]+)/$', views.solution_display,
         name='solution_display'),
     url(r'^results/$', views.list_results, name='list_results'),
-    url(r'^results/(?P<solution_id>[0-9]+)/$', views.solution_description,
-        name='solution_description'),
+    url(r'^results/(?P<result_id>[0-9]+)/$', views.result_description,
+        name='result_description'),
+    url(r'^competition/$', views.competition, name='competition'),
 ]

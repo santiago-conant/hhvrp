@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block css %}
+	<style>
+		h2 {
+			text-align: center;
+			font-family: verdana;
+			color: #0070d0;
+		}
+	th, tr {
+		font-family: verdana;
+		font-size: 16px;
+		color: #0070d0;
+	}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+	<h2>Result Description</h2>
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Attribute</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>User</td>
+				<td>{{ result.username }}</td>
+			</tr>
+			<tr>
+				<td>Problem</td>
+				<td>{{ result.problem.name }}</td>
+			</tr>
+			<tr>
+				<td>Total cost</td>
+				<td>{{ cost }} kms.</td>
+			</tr>
+			<tr>
+				<td>Created</td>
+				<td>{{ result.created }}</td>
+			</tr>
+			<tr>
+				<td>Intraroute 2-opt</td>
+				<td>{{ intra2opt }}%</td>
+			</tr>
+			<tr>
+				<td>Interroute 2-opt</td>
+				<td>{{ inter2opt }}%</td>
+			</tr>
+			<tr>
+				<td>Intraroute Shift</td>
+				<td>{{ intraShift }}%</td>
+			</tr>
+			<tr>
+				<td>Interroute Shift</td>
+				<td>{{ interShift }}%</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+{% endblock %}

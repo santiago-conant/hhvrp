@@ -1,9 +1,9 @@
 from django.shortcuts import render
 
-from .models import Solution, Route, RouteSequence
+from .models import Solution, Route, RouteSequence, Result
 from problems.models import Customer, Problem
-from .forms import SAparameters
-from .simulated_annealing import *
+from .forms import SAparameters, CompetitionForm
+from .sa_hyperheuristic import *
 
 def route_selection(request):
         routes = Route.objects.all()
@@ -67,15 +67,14 @@ def solve_problem(request):
                                                          max_temp, min_temp,
                                                          eq_iter, temp_change)
                         # saving the solution in the database
-                        solution = Solution(problem = problem,
-                                            username = username,
-                                            max_time = max_time,
-                                            max_temp = max_temp,
-                                            min_temp = min_temp,
-                                            eq_iter = eq_iter,
-                                            temp_change = temp_change,
-                                            cost = best.cost())
-                        solution.save()
+##                        solution = Solution(problem = problem,
+##                                            max_time = max_time,
+##                                            max_temp = max_temp,
+##                                            min_temp = min_temp,
+##                                            eq_iter = eq_iter,
+##                                            temp_change = temp_change,
+##                                            cost = best.cost())
+##                        solution.save()
 ##                        for r in best.routes:
 ##                                route = Route(solution=solution)
 ##                                route.save()
@@ -85,8 +84,7 @@ def solve_problem(request):
 ##                                        customer = RouteSequence(route=route,
 ##                                                                 customer=cust,
 ##                                                                 position=p)
-##                                        customer.save()
-                                        
+##                                        customer.save()                                        
                         # displaying the solution
                         colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00',
                                   '#00FFFF', '#FF00FF', '#FFFFFF', '#000000']
@@ -103,27 +101,82 @@ def solve_problem(request):
                                    'cost': '{:,.3f}'.format(best.cost()),
                                    'solution': croutes}
                         return render(request, 'solutions/draw_solution.html', context)
-
         # if a GET (or any other method) we'll create a blank form
         else:
                 form = SAparameters()
    
         return render(request, 'solutions/solve_problem.html', {'form': form})
 
+def competition(request):
+        # if this is a POST request we need to process the form data
+        if request.method == 'POST':
+                # create a form instance and populate it with data from the request:
+                form = CompetitionForm(request.POST)
+                # check whether it's valid:
+                if form.is_valid():
+                        problem = Problem.objects.get(id = 1)
+                        max_time = 3000.0
+                        max_temp = 30.0
+                        min_temp = 1.0
+                        eq_iter = 30
+                        temp_change = 0.9
+                        username = form.cleaned_data['username']
+                        pIntraInter = form.cleaned_data['prob_Intra_Inter']/100.0
+                        p2optRmove = form.cleaned_data['prob_2opt_Rmove']/100.0
+                        random.seed(123456789)
+                        best,custs = sa_hyperheuristic(problem.id, pIntraInter,
+                                                       p2optRmove, max_time,
+                                                       max_temp, min_temp,
+                                                       eq_iter, temp_change)
+                        # saving the solution in the database
+                        result = Result(problem = problem,
+                                        username = username,
+                                        intra2opt = pIntraInter*p2optRmove,
+                                        inter2opt = (1.0 - pIntraInter)*p2optRmove,
+                                        intraShift = pIntraInter*(1.0 - p2optRmove),
+                                        interShift = (1.0 - pIntraInter)*(1.0 - p2optRmove),
+                                        cost = best.cost())
+                        result.save()
+                        # displaying the solution
+                        colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00',
+                                  '#00FFFF', '#FF00FF', '#FFFFFF', '#000000']
+                        croutes = []
+                        for nr,r in enumerate(best.routes):
+                                croute = []
+                                for c in r.customers:
+                                        croute.append({'name': custs[c].name,
+                                                       'latitude': custs[c].latitude,
+                                                       'longitude': custs[c].longitude})
+                                croutes.append({'color': colors[nr % 8], 'customers': croute})
+                        # redirect to a new URL:
+                        context = {'user': username,
+                                   'cost': '{:,.3f}'.format(best.cost()),
+                                   'solution': croutes}
+                        return render(request, 'solutions/draw_solution.html', context)
+        # if a GET (or any other method) we'll create a blank form
+        else:
+                form = CompetitionForm()
+   
+        return render(request, 'solutions/competition.html', {'form': form})
+
 def list_results(request):
-        solutions = Solution.objects.order_by('cost')
-        sols = []
-        for solution in solutions:
-                sols.append({'solution_id': solution.id,
-                             'user': solution.username,
-                             'problem': solution.problem,
-                             'created': solution.created,
-                             'cost': '{:,.3f}'.format(solution.cost)})
-        context = {'solutions': sols}
+        results = Result.objects.all()
+        result_list = []
+        for result in results:
+                result_list.append({'result_id': result.id,
+                                    'user': result.username,
+                                    'problem': result.problem,
+                                    'cost': '{:,.3f}'.format(result.cost)})
+        context = {'results': result_list}
         return render(request, 'solutions/list_results.html', context)
 
-def solution_description(request, solution_id):
-        solution = Solution.objects.get(id = solution_id)
-        context = {'solution': solution, 'cost': '{:,.3f}'.format(solution.cost)}
-        return render(request, 'solutions/solution_description.html', context)
+def result_description(request, result_id):
+        result = Result.objects.get(id = result_id)
+        context = {'result': result,
+                   'intra2opt': '{:.2f}'.format(result.intra2opt * 100),
+                   'inter2opt': '{:.2f}'.format(result.inter2opt * 100),
+                   'intraShift': '{:.2f}'.format(result.intraShift * 100),
+                   'interShift': '{:.2f}'.format(result.interShift * 100),
+                   'cost': '{:,.3f}'.format(result.cost)}
+        return render(request, 'solutions/result_description.html', context)
 

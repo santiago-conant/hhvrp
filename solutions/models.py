@@ -7,8 +7,6 @@ class Solution(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     # date and time of solution's creation
     created = models.DateTimeField(auto_now_add=True, blank=True)
-    # user name that run the solver
-    username = models.CharField(max_length=50)
     # Maximum time for a route
     max_time = models.FloatField(default=0.0) 
     # Simulated Annealing initial temperature
@@ -26,11 +24,39 @@ class Solution(models.Model):
         c = {}
         c['problem'] = self.problem.name
         c['date'] = self.created
+        return str(c)
+
+    class Meta:
+        ordering = ['created']
+
+class Result(models.Model):
+    """Result of HHVRP competition"""
+    # vrp problem solved
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    # date and time of solution's creation
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+    # user name that run the solver
+    username = models.CharField(max_length=50)
+    # Probability of using the intraroute 2-opt heuristic
+    intra2opt = models.FloatField(default=0.0)  
+    # Probability of using the interroute 2-optheuristic
+    inter2opt = models.FloatField(default=0.0)  
+    # Probability of using the intraroute shift heuristic
+    intraShift = models.FloatField(default=0.0)  
+    # Probability of using the interroute shift heuristic
+    interShift = models.FloatField(default=0.0)  
+    # Solution cost
+    cost = models.FloatField(default=0.0)  
+    
+    def __str__(self):
+        c = {}
+        c['problem'] = self.problem.name
+        c['date'] = self.created
         c['user'] = self.username
         return str(c)
 
     class Meta:
-        ordering = ['username', 'created']
+        ordering = ['cost']
 
 class Route(models.Model):
     """Route data for VRP problems"""

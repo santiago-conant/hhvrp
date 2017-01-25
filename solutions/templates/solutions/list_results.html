@@ -2,23 +2,21 @@
 
 {% block content %}
 	<div class="container">
-	<h1>List of Solutions</h1>
+	<h2 align='center'>List of Results</h2>
 	<table class="striped">
 		<thead>
 			<tr>
-				<th>User</th>
+				<th>Competitor</th>
 				<th>Problem</th>
-				<th>DateTime</th>
 				<th>Length</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for solution in solutions %}
+			{% for result in results %}
 				<tr>
-					<td>{{ solution.user }}</td>
-					<td><a href="{% url 'solutions:solution_description' solution.solution_id %}">{{ solution.problem.name }}</a></td>
-					<td>{{ solution.created }}</td>
-					<td>{{ solution.cost }} kms.</td>
+					<td>{{ result.user }}</td>
+					<td><a href="{% url 'solutions:result_description' result.result_id %}">{{ result.problem.name }}</a></td>
+					<td>{{ result.cost }} kms.</td>
 				</tr>
 			{% endfor %}
 		</tbody>

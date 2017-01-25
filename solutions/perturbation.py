@@ -21,6 +21,7 @@ def intraroute_2opt(route, customers):
     else:
         route.customers[c1:c2] = r.customers[c1:c2]
         route.update(customers)
+        print("succeed intraroute 2opt")
         return True
 
 def interroute_2opt(route1, route2, customers):
@@ -86,7 +87,7 @@ def random_intraroute_movement(position, route, customers):
     if fpositions:
         npos = random.choice(fpositions)
         route.insert(npos, [customer], customers)
-        print("Intraroute movement!")
+        print("succed intraroute movement")
         #print("true, route = ", route)
         return True
     else:
@@ -154,6 +155,7 @@ def random_interroute_movement(pcust, nroute, solution, customers):
     if oroute.empty():
         #print("Remove empty route!")
         solution.remove(nroute)
+    print("succed intraroute movement")
     #print("solution = ", solution)
 
 # test code
