@@ -69,14 +69,12 @@ input, select {
 
 {% block content %}
 
-<h1>Competition</h1>
-
-<br>
-<p>Problem = 'Capitales de México'</p>
+<h1>Create a Hyperheuristic for VRP</h1>
 
 <form action="{% url 'solutions:competition' %}" method="post" onsubmit="inicio();">
     {% csrf_token %}
 	<br>
+	<p>Problem <input type="text" value='{{ problem }}' readonly> </p>
     <p> Your name {{ form.username }} </p>
 	<p> Interroute 
 		<input type="text" id="interInput" size='1' value="" readonly>

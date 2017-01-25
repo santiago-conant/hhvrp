@@ -109,12 +109,12 @@ def solve_problem(request):
 
 def competition(request):
         # if this is a POST request we need to process the form data
+        problem = Problem.objects.get(id = 1)
         if request.method == 'POST':
                 # create a form instance and populate it with data from the request:
                 form = CompetitionForm(request.POST)
                 # check whether it's valid:
-                if form.is_valid():
-                        problem = Problem.objects.get(id = 1)
+                if form.is_valid():         
                         max_time = 3000.0
                         max_temp = 30.0
                         min_temp = 1.0
@@ -153,6 +153,7 @@ def competition(request):
                                 croutes.append({'color': colors[nr % 8], 'customers': croute})
                         # redirect to a new URL:
                         context = {'user': username,
+                                   'problem': problem.name,
                                    'cost': '{:,.3f}'.format(best.cost()),
                                    'solution': croutes}
                         return render(request, 'solutions/draw_solution.html', context)
@@ -160,7 +161,7 @@ def competition(request):
         else:
                 form = CompetitionForm()
    
-        return render(request, 'solutions/competition.html', {'form': form})
+        return render(request, 'solutions/competition.html', {'form': form, 'problem': problem.name})
 
 def list_results(request):
         results = Result.objects.all()
