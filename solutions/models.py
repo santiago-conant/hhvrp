@@ -33,10 +33,14 @@ class Result(models.Model):
     """Result of HHVRP competition"""
     # vrp problem solved
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
-    # date and time of solution's creation
-    created = models.DateTimeField(auto_now_add=True, blank=True)
     # user name that run the solver
     username = models.CharField(max_length=50)
+    # Solution cost
+    cost = models.FloatField(default=0.0)  
+    # date and time of solution's creation
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+    # execution time
+    exec_time = models.FloatField(default=0.0)
     # Probability of using the intraroute 2-opt heuristic
     intra2opt = models.FloatField(default=0.0)  
     # Probability of using the interroute 2-optheuristic
@@ -45,8 +49,6 @@ class Result(models.Model):
     intraShift = models.FloatField(default=0.0)  
     # Probability of using the interroute shift heuristic
     interShift = models.FloatField(default=0.0)  
-    # Solution cost
-    cost = models.FloatField(default=0.0)  
     
     def __str__(self):
         c = {}

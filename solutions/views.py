@@ -5,6 +5,8 @@ from problems.models import Customer, Problem
 from .forms import SAparameters, CompetitionForm
 from .sa_hyperheuristic import *
 
+import time
+
 def route_selection(request):
         routes = Route.objects.all()
         context = {'routes': routes, 'routesCount':Route.objects.count()}
@@ -62,7 +64,6 @@ def solve_problem(request):
                         min_temp = form.cleaned_data['min_temp']
                         eq_iter = form.cleaned_data['eq_iter']
                         temp_change = form.cleaned_data['temp_change']
-                        username = form.cleaned_data['username']
                         best,custs = simulated_annealing(problem.id, max_time,
                                                          max_temp, min_temp,
                                                          eq_iter, temp_change)
@@ -97,8 +98,7 @@ def solve_problem(request):
                                                        'longitude': custs[c].longitude})
                                 croutes.append({'color': colors[nr % 8], 'customers': croute})
                         # redirect to a new URL:
-                        context = {'user': username,
-                                   'cost': '{:,.3f}'.format(best.cost()),
+                        context = {'cost': '{:,.3f}'.format(best.cost()),
                                    'solution': croutes}
                         return render(request, 'solutions/draw_solution.html', context)
         # if a GET (or any other method) we'll create a blank form
@@ -124,18 +124,21 @@ def competition(request):
                         pIntraInter = form.cleaned_data['prob_Intra_Inter']/100.0
                         p2optRmove = form.cleaned_data['prob_2opt_Rmove']/100.0
                         random.seed(123456789)
+                        exec_time = time.time()
                         best,custs = sa_hyperheuristic(problem.id, pIntraInter,
                                                        p2optRmove, max_time,
                                                        max_temp, min_temp,
                                                        eq_iter, temp_change)
+                        exec_time = time.time() - exec_time
                         # saving the solution in the database
                         result = Result(problem = problem,
                                         username = username,
+                                        cost = best.cost(),
+                                        exec_time = exec_time,
                                         intra2opt = pIntraInter*p2optRmove,
                                         inter2opt = (1.0 - pIntraInter)*p2optRmove,
                                         intraShift = pIntraInter*(1.0 - p2optRmove),
-                                        interShift = (1.0 - pIntraInter)*(1.0 - p2optRmove),
-                                        cost = best.cost())
+                                        interShift = (1.0 - pIntraInter)*(1.0 - p2optRmove))
                         result.save()
                         # displaying the solution
                         colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00',
@@ -173,10 +176,11 @@ def list_results(request):
 def result_description(request, result_id):
         result = Result.objects.get(id = result_id)
         context = {'result': result,
+                   'cost': '{:,.3f}'.format(result.cost),
+                   'exec_time': '{:,.3f}'.format(result.exec_time),
                    'intra2opt': '{:.2f}'.format(result.intra2opt * 100),
                    'inter2opt': '{:.2f}'.format(result.inter2opt * 100),
                    'intraShift': '{:.2f}'.format(result.intraShift * 100),
-                   'interShift': '{:.2f}'.format(result.interShift * 100),
-                   'cost': '{:,.3f}'.format(result.cost)}
+                   'interShift': '{:.2f}'.format(result.interShift * 100)}
         return render(request, 'solutions/result_description.html', context)
 
