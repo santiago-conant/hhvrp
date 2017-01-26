@@ -116,9 +116,9 @@ def competition(request):
                 # check whether it's valid:
                 if form.is_valid():         
                         max_time = 3000.0
-                        max_temp = 30.0
-                        min_temp = 1.0
-                        eq_iter = 30
+                        max_temp = 25.0
+                        min_temp = 5.0
+                        eq_iter = 20
                         temp_change = 0.9
                         username = form.cleaned_data['username']
                         pIntraInter = form.cleaned_data['prob_Intra_Inter']/100.0
